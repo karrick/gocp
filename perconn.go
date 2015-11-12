@@ -143,13 +143,13 @@ func (client *Client) proxy(rwc io.ReadWriteCloser) error {
 	for job := range client.jobs {
 		switch job.op {
 		case _read:
-			n, err := conn.Read(job.data)
+			n, err := rwc.Read(job.data)
 			job.results <- rillResult{n, err}
 			if err != nil {
 				return err
 			}
 		case _write:
-			n, err := conn.Write(job.data)
+			n, err := rwc.Write(job.data)
 			job.results <- rillResult{n, err}
 			if err != nil {
 				return err
@@ -159,7 +159,7 @@ func (client *Client) proxy(rwc io.ReadWriteCloser) error {
 	return err
 }
 
-func (client *Client) Read(buf []byte) (int, error) {
+func (client *Client) Read(data []byte) (int, error) {
 	job := newRillJob(_read, make([]byte, len(data)))
 	client.jobs <- job
 

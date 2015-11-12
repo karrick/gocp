@@ -64,7 +64,7 @@ func PoolSize(size int) Configurator {
 // 	}
 // }
 
-func Address(address func(interface{})) Configurator {
+func Address(address string) Configurator {
 	return func(pc *poolConfig) error {
 		pc.address = address
 		return nil
