@@ -3,20 +3,23 @@ package gocp
 import (
 	"errors"
 
+	"github.com/karrick/goperconn"
 	"github.com/karrick/gopool"
 )
 
-// DefaultPoolSize specifies the number of connections to maintain to a single host for a connection
+// DefaultSize specifies the number of connections to maintain to a single host for a connection
 // pool instance.
-const DefaultPoolSize = 5
+const DefaultSize = 5
 
+// Pool maintains a free-list of connections to a single host in a pool.
 type Pool struct {
 	pool gopool.Pool
 }
 
+// New returns a new Pool structure.
 func New(setters ...Configurator) (*Pool, error) {
-	pc := &poolConfig{
-		poolSize: DefaultPoolSize,
+	pc := &config{
+		size: DefaultSize,
 	}
 	for _, setter := range setters {
 		if err := setter(pc); err != nil {
@@ -27,9 +30,12 @@ func New(setters ...Configurator) (*Pool, error) {
 		return nil, errors.New("cannot create pool with empty address")
 	}
 	pool, err := gopool.New(
-		gopool.Size(pc.poolSize),
+		gopool.Size(pc.size),
+		gopool.Close(func(conn interface{}) error {
+			return conn.(*goperconn.Conn).Close()
+		}),
 		gopool.Factory(func() (interface{}, error) {
-			return NewClient(ClientAddress(pc.address))
+			return goperconn.New(goperconn.Address(pc.address))
 		}),
 	)
 	if err != nil {
@@ -38,10 +44,12 @@ func New(setters ...Configurator) (*Pool, error) {
 	return &Pool{pool: pool}, nil
 }
 
-func (pool *Pool) Get() *Client {
-	return pool.pool.Get().(*Client)
+// Get acquires a connection resource from the pool.
+func (pool *Pool) Get() *goperconn.Conn {
+	return pool.pool.Get().(*goperconn.Conn)
 }
 
-func (pool *Pool) Put(client *Client) {
-	pool.pool.Put(client)
+// Put releases a connection resource to the pool.
+func (pool *Pool) Put(conn *goperconn.Conn) {
+	pool.pool.Put(conn)
 }
