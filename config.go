@@ -1,9 +1,14 @@
 package gocp
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/karrick/goperconn"
+)
 
 type config struct {
 	address string
+	printer goperconn.Printer
 	size    int
 }
 
@@ -15,6 +20,14 @@ type Configurator func(*config) error
 func Address(address string) Configurator {
 	return func(pc *config) error {
 		pc.address = address
+		return nil
+	}
+}
+
+// Logger specifies the logger to be used to log I/O errors.
+func Logger(printer goperconn.Printer) Configurator {
+	return func(pc *config) error {
+		pc.printer = printer
 		return nil
 	}
 }

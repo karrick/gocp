@@ -35,6 +35,9 @@ func New(setters ...Configurator) (*Pool, error) {
 			return conn.(*goperconn.Conn).Close()
 		}),
 		gopool.Factory(func() (interface{}, error) {
+			if pc.printer != nil {
+				return goperconn.New(goperconn.Address(pc.address), goperconn.Logger(pc.printer))
+			}
 			return goperconn.New(goperconn.Address(pc.address))
 		}),
 	)
