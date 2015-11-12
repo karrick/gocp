@@ -6,13 +6,17 @@ import (
 	"github.com/karrick/gopool"
 )
 
+// DefaultPoolSize specifies the number of connections to maintain to a single host for a connection
+// pool instance.
+const DefaultPoolSize = 5
+
 type Pool struct {
 	pool gopool.Pool
 }
 
 func New(setters ...Configurator) (*Pool, error) {
 	pc := &poolConfig{
-		poolSize: gopool.DefaultPoolSize,
+		poolSize: DefaultPoolSize,
 	}
 	for _, setter := range setters {
 		if err := setter(pc); err != nil {
@@ -22,8 +26,8 @@ func New(setters ...Configurator) (*Pool, error) {
 	if pc.address == "" {
 		return nil, errors.New("cannot create pool with empty address")
 	}
-	pool, err := gopool.NewChanPool(
-		gopool.PoolSize(pc.poolSize),
+	pool, err := gopool.New(
+		gopool.Size(pc.poolSize),
 		gopool.Factory(func() (interface{}, error) {
 			return NewClient(ClientAddress(pc.address))
 		}),
