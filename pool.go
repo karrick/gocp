@@ -4,8 +4,8 @@ import (
 	"errors"
 	"io"
 
-	"github.com/karrick/goperconn"
-	"github.com/karrick/gopool"
+	goperconn "gopkg.in/karrick/goperconn.v1"
+	gopool "gopkg.in/karrick/gopool.v1"
 )
 
 // DefaultSize specifies the number of connections to maintain to a single host for a connection

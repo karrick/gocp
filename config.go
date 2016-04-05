@@ -3,7 +3,7 @@ package gocp
 import (
 	"fmt"
 
-	goperconn "gopkg.in/karrick/goperconn.v1"
+	goperconn "gopkg.in/karrick/goperconn.v1.1.0"
 )
 
 type config struct {
