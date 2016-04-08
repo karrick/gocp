@@ -24,7 +24,7 @@ have reasonalbe defaults and may be elided.
 
     import (
         "log"
-        "github.com/karrick/gocp"
+        gocp "gopkg.in/karrick/gocp.v1"
     )
 
     func main() {
@@ -60,7 +60,7 @@ called with the error message.
 
     import (
         "log"
-        "github.com/karrick/gocp"
+        gocp "gopkg.in/karrick/gocp.v1"
     )
 
     func main() {
@@ -98,7 +98,7 @@ it can be changed by using the Size function.
 
     import (
         "log"
-        "github.com/karrick/gocp"
+        gocp "gopkg.in/karrick/gocp.v1"
     )
 
     func main() {
